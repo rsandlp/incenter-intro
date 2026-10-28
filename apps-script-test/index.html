@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: "Malgun Gothic", sans-serif; background: #f5f6f8; margin: 0; padding: 24px; text-align: center; }
+    .card { background: #fff; border: 1px solid #dfe2e7; border-radius: 12px; padding: 20px; max-width: 480px; margin: 0 auto 14px; }
+    .mark { font-size: 56px; font-weight: 700; }
+    .ok { color: #15803d; }
+    .bad { color: #b91c1c; }
+    .wait { color: #6b7280; }
+    p { color: #6b7280; margin: 6px 0 0; }
+  </style>
+</head>
+<body>
+  <h2>학생망 접속 시험</h2>
+
+  <div class="card">
+    <div>① 화면 열기</div>
+    <div class="mark ok">○</div>
+    <p>이 화면이 보이면 통과예요.</p>
+  </div>
+
+  <div class="card">
+    <div>② 구글 서버와 주고받기 (실시간 연결)</div>
+    <div class="mark wait" id="m2">…</div>
+    <p id="t2">확인하는 중이에요.</p>
+  </div>
+
+  <script>
+    var done = false;
+    function show(ok, text) {
+      if (done) return;
+      done = true;
+      var m = document.getElementById('m2');
+      m.textContent = ok ? '○' : '×';
+      m.className = 'mark ' + (ok ? 'ok' : 'bad');
+      document.getElementById('t2').textContent = text;
+    }
+    google.script.run
+      .withSuccessHandler(function (time) { show(true, '통과예요. (서버 응답 시각 ' + time + ')'); })
+      .withFailureHandler(function (e) { show(false, '연결이 막혔어요: ' + e.message); })
+      .ping();
+    setTimeout(function () { show(false, '10초 안에 응답이 없어요. 연결이 막혔을 수 있어요.'); }, 10000);
+  </script>
+</body>
+</html>
